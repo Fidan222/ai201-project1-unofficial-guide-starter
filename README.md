@@ -35,7 +35,7 @@ I chose student reviews of CS professors at Gannon University from Rate My Profe
 
 **Why these choices fit your documents**:the reviews are already pretty short, most of them are like 1 to 4 sentences. so 300 characters fits about 1 or 2 reviews in one chunk which i thought was good because each chunk stays focused on one opinion and doesnt mix a bunch of unrelated stuff together. i used 50 character overlap so that if a review gets cut at the end of a chunk the next chunk still has a little bit of it so nothing important gets completely lost. before chunking i manually cleaned each file by removing all the RMP boilerplate like dates, grades, attendance info, thumbs up counts, and tag labels. i only kept the actual review text plus the professor name and course number at the top.
 
-**Final chunk count**: 63 chunks across 10 documents
+**Final chunk count**:63 chunks across 10 documents
 
 ---
 
@@ -45,7 +45,7 @@ I chose student reviews of CS professors at Gannon University from Rate My Profe
 **Model used:**all-MiniLM-L6-v2 via sentence-transformers
 i used this because its free and runs on my laptop with no api key needed. worked fine for this since the reviews are short and in english.
 
-**Production tradeoff reflection:** if this was a real product i would probably switch to a better model. like if i wanted more accurate results on opinion text i would pay for OpenAIs embedding model. if reviews were in other languages id need a multilingual model. also MiniLM only handles 256 tokens at a time which was fine here but wouldnt work for longer documents. and local models are faster than api ones which matters if real students are using it and dont want to wait.
+**Production tradeoff reflection:**if this was a real product i would probably switch to a better model. like if i wanted more accurate results on opinion text i would pay for OpenAIs embedding model. if reviews were in other languages id need a multilingual model. also MiniLM only handles 256 tokens at a time which was fine here but wouldnt work for longer documents. and local models are faster than api ones which matters if real students are using it and dont want to wait.
 
 ---
 
@@ -58,7 +58,7 @@ i used this because its free and runs on my laptop with no api key needed. worke
      Do not just say "I told it to use the documents" — show the actual instruction or explain
      the mechanism. -->
 
-**System prompt grounding instruction:** in app.py i told the LLM it can only use what i give it. the rules i put in the prompt are:
+**System prompt grounding instruction:**in app.py i told the LLM it can only use what i give it. the rules i put in the prompt are:
 IMPORTANT RULES:
 - Answer using ONLY the information provided in the sources below
 - Do NOT use any outside knowledge or make assumptions
@@ -78,13 +78,9 @@ basically the chunks get pasted into the prompt before the question so the LLM o
 | # | Question | Expected answer | System response (summarized) | Retrieval quality | Response accuracy |
 |---|----------|-----------------|------------------------------|-------------------|-------------------|
 | 1 | which professor is the easiest to pass? | David Marino | said Marino, Blair, and Cannell are all easy to pass | Relevant | Accurate |
-
 | 2 | which professor isnt clear about grades and lectures? | Tajmilur Rahman | said Rahman, doesnt follow syllabus and grades randomly | Relevant | Accurate |
-
 | 3 | which professor is student favorite that everyone likes? | Mark Blair | said David Marino instead of Blair | Partially relevant | Partially accurate |
-
 | 4 | which professor is most disliked by students for being rude? | Tajmilur Rahman | said Rahman, yells at students and humiliates them publicly | Relevant | Accurate |
-
 | 5 | which professor is very disorganized? | Jeremy Cannell | said Mark Blair instead of Cannell | Off-target | Inaccurate |
 
 **Retrieval quality:** Relevant / Partially relevant / Off-target  
@@ -107,7 +103,7 @@ basically the chunks get pasted into the prompt before the question so the LLM o
 ## Spec Reflection
 
 
-**One way the spec helped you during implementation:** writing the chunking strategy in planning.md before i wrote any code made me actually think about my documents first. because i read through the reviews and noticed they were short i decided on 300 characters upfront and that decision carried straight into the chunk_text() function. i didnt have to guess at numbers mid implementation, the spec basically made the decision for me ahead of time.
+**One way the spec helped you during implementation:**writing the chunking strategy in planning.md before i wrote any code made me actually think about my documents first. because i read through the reviews and noticed they were short i decided on 300 characters upfront and that decision carried straight into the chunk_text() function. i didnt have to guess at numbers mid implementation, the spec basically made the decision for me ahead of time.
 
 **One way your implementation diverged from the spec, and why:** my spec assumed i could load documents from URLs but Rate My Professors blocks automated scraping. when i tried fetching a URL in python it just returned an error. so i had to manually copy paste every single review from 10 professor pages into individual txt files which took way longer than expected and wasnt in my original plan at all. if i did this project again i would put that in the spec from the start and budget extra time for it.
 
@@ -119,11 +115,11 @@ basically the chunks get pasted into the prompt before the question so the LLM o
 **Instance 1**
 
 - *What I gave the AI:*my Documents section (10 txt files, one per professor) and my Chunking Strategy section (300 char chunks, 50 char overlap) from planning.md
-- *What it produced:* a working ingest.py script with load_documents() and chunk_text() functions that read all the txt files and split them into overlapping chunks with source metadata attached
+- *What it produced:*a working ingest.py script with load_documents() and chunk_text() functions that read all the txt files and split them into overlapping chunks with source metadata attached
 - *What I changed or overrode:*i ran python ingest.py and looked at the 5 sample chunks it printed. i noticed some chunks started mid word because of the fixed character split. i kept the chunk size the same but documented this as a known limitation in the failure case section
 
 **Instance 2**
 
 - *What I gave the AI:*my Retrieval Approach section (model: all-MiniLM-L6-v2, top-k: 5) and my architecture diagram from planning.md
 - *What it produced:* retriever.py with embed_and_store() that loads chunks and stores them in ChromaDB with source metadata, and retrieve() that embeds a query and returns the top 5 closest chunks with their source filenames and distance scores
-- *What I changed or overrode:* i tested it with 3 evaluation queries and saw that distance scores were high around 0.9 to 1.1 meaning weak matches. i didnt change the code but traced the problem back to the chunking stage and used it as my failure case
+- *What I changed or overrode:*i tested it with 3 evaluation queries and saw that distance scores were high around 0.9 to 1.1 meaning weak matches. i didnt change the code but traced the problem back to the chunking stage and used it as my failure case
