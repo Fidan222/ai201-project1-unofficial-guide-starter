@@ -1,0 +1,5 @@
+PROFESSOR: Scott Steinbrink
+
+Review 1 (ME205): Overall great class, you don't need to know anything about coding to get a good grade. Just make sure to leave each class knowing what was talked about. If you don't understand something just ask, he is good at explaining and will even stay after class. The MATLAB book is helpful, leave notes inside it every class because you can use it on exams.
+
+Review 2 (ME205): Sometimes it seems like he forgets he is teaching people who have never had a programming class before, but as long as you pay attention and ask lots of questions you should do alright. If you are stuck on a lab assignment you can submit what you have done with comments and he will give partial credit.
